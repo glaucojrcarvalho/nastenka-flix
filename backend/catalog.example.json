@@ -1,0 +1,77 @@
+[
+  {
+    "slug": "sample-series-one",
+    "title": "Sample Series One",
+    "synopsis": "A compelling drama about ordinary people navigating extraordinary circumstances.",
+    "poster_url": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
+    "seasons_count": 1,
+    "episodes": [
+      {
+        "season_number": 1,
+        "episode_number": 1,
+        "title": "Episode 1",
+        "description": "The story begins as our protagonist faces an unexpected turning point.",
+        "duration_seconds": 2700,
+        "media_path": "series/sample-series-one/season-01/episode-01.mp4"
+      },
+      {
+        "season_number": 1,
+        "episode_number": 2,
+        "title": "Episode 2",
+        "description": "Alliances form and old secrets start to surface.",
+        "duration_seconds": 2700,
+        "media_path": "series/sample-series-one/season-01/episode-02.mp4"
+      }
+    ]
+  },
+  {
+    "slug": "sample-series-two",
+    "title": "Sample Series Two",
+    "synopsis": "A lighthearted comedy about family, chaos, and the warmth that holds everything together.",
+    "poster_url": "https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?auto=format&fit=crop&w=1200&q=80",
+    "seasons_count": 1,
+    "episodes": [
+      {
+        "season_number": 1,
+        "episode_number": 1,
+        "title": "Episode 1",
+        "description": "A new arrival upends the comfortable routine of an unsuspecting household.",
+        "duration_seconds": 1560,
+        "media_path": "series/sample-series-two/season-01/episode-01.mp4"
+      },
+      {
+        "season_number": 1,
+        "episode_number": 2,
+        "title": "Episode 2",
+        "description": "The ripple effects of the first day bring unexpected laughter and connection.",
+        "duration_seconds": 1560,
+        "media_path": "series/sample-series-two/season-01/episode-02.mp4"
+      }
+    ]
+  },
+  {
+    "slug": "sample-series-three",
+    "title": "Sample Series Three",
+    "synopsis": "An epic saga spanning decades and continents, following love lost and found across generations.",
+    "poster_url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    "seasons_count": 1,
+    "episodes": [
+      {
+        "season_number": 1,
+        "episode_number": 1,
+        "title": "Episode 1",
+        "description": "Two lives intersect for the first time, setting off a chain of events neither could predict.",
+        "duration_seconds": 2640,
+        "media_path": "series/sample-series-three/season-01/episode-01.mp4"
+      },
+      {
+        "season_number": 1,
+        "episode_number": 2,
+        "title": "Episode 2",
+        "description": "Distance and circumstance pull them apart, but the memory lingers.",
+        "duration_seconds": 2640,
+        "media_path": "series/sample-series-three/season-01/episode-02.mp4"
+      }
+    ]
+  }
+]
