@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Frontend build artifacts
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Env
+.env
+
+# Private catalog — keep real series choices off the public repo
+backend/catalog.json
+
+# Private project docs — contain personal details about the gift recipient
+docs/
+
+# Media files — real video content and folder names stay off the public repo
+media/series/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
