@@ -5,9 +5,10 @@ type VideoPlayerProps = {
   poster?: string | null;
   initialPositionSeconds: number;
   onProgress: (positionSeconds: number, completed: boolean) => void;
+  onPlaybackError?: () => void;
 };
 
-export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress }: VideoPlayerProps) {
+export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress, onPlaybackError }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const lastSyncedRef = useRef(0);
 
@@ -38,6 +39,9 @@ export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress }:
       onEnded={(event) => {
         const currentTime = Math.floor(event.currentTarget.duration || event.currentTarget.currentTime);
         onProgress(currentTime, true);
+      }}
+      onError={() => {
+        onPlaybackError?.();
       }}
     />
   );

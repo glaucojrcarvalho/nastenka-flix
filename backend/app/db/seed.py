@@ -51,16 +51,29 @@ def seed_database(db: Session) -> None:
             )
             db.add(series)
             db.flush()
+        else:
+            series.title = series_fixture["title"]
+            series.synopsis = series_fixture["synopsis"]
+            series.poster_url = series_fixture["poster_url"]
+            series.seasons_count = series_fixture["seasons_count"]
 
         for episode_fixture in series_fixture["episodes"]:
             episode = (
                 db.query(Episode)
-                .filter(Episode.media_path == episode_fixture["media_path"])
+                .filter(Episode.series_id == series.id)
+                .filter(Episode.season_number == episode_fixture["season_number"])
+                .filter(Episode.episode_number == episode_fixture["episode_number"])
                 .first()
             )
-            if episode is not None:
+            if episode is None:
+                db.add(Episode(series_id=series.id, **episode_fixture))
                 continue
-            db.add(Episode(series_id=series.id, **episode_fixture))
+
+            episode.title = episode_fixture["title"]
+            episode.description = episode_fixture["description"]
+            episode.duration_seconds = episode_fixture["duration_seconds"]
+            episode.media_path = episode_fixture["media_path"]
+            episode.thumbnail_url = episode_fixture.get("thumbnail_url")
 
     db.commit()
 

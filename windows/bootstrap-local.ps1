@@ -5,24 +5,33 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
 Set-Location $projectRoot
 
+function Decode-Base64Utf8 {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Value
+    )
+
+    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Value))
+}
+
 # Edit this list once on her laptop, then run .\windows\bootstrap-local.cmd
 $seriesImports = @(
     @{
         SourceDir = "C:\Users\anast\OneDrive\Desktop\Ne.rodis.krasivoy.200.seriy.iz.200.2005-2006.DivX.DVDRip"
-        SeriesTitle = "Не родись красивой"
+        SeriesTitleBase64 = "0J3QtSDRgNC+0LTQuNGB0Ywg0LrRgNCw0YHQuNCy0L7QuQ=="
         SeriesSlug = "ne-rodis-krasivoy"
         SeasonNumber = 1
-        EpisodeTitleTemplate = "Серия {episode}"
-        EpisodeDescriptionTemplate = "Серия {episode}"
+        EpisodeTitleTemplateBase64 = "0KHQtdGA0LjRjyB7ZXBpc29kZX0="
+        EpisodeDescriptionTemplateBase64 = "0KHQtdGA0LjRjyB7ZXBpc29kZX0="
         Mode = "move"
     }
     @{
-        SourceDir = "C:\Users\anast\OneDrive\Desktop\Моя прекрасная няня DVDRip"
-        SeriesTitle = "Моя прекрасная няня"
+        SourceDirBase64 = "QzpcVXNlcnNcYW5hc3RcT25lRHJpdmVcRGVza3RvcFzQnNC+0Y8g0L/RgNC10LrRgNCw0YHQvdCw0Y8g0L3Rj9C90Y8gRFZEUmlw"
+        SeriesTitleBase64 = "0JzQvtGPINC/0YDQtdC60YDQsNGB0L3QsNGPINC90Y/QvdGP"
         SeriesSlug = "moya-prekrasnaya-nyanya"
         SeasonNumber = 1
-        EpisodeTitleTemplate = "Серия {episode}"
-        EpisodeDescriptionTemplate = "Серия {episode}"
+        EpisodeTitleTemplateBase64 = "0KHQtdGA0LjRjyB7ZXBpc29kZX0="
+        EpisodeDescriptionTemplateBase64 = "0KHQtdGA0LjRjyB7ZXBpc29kZX0="
         Mode = "move"
     }
 )
@@ -53,22 +62,44 @@ function Ensure-HostsEntry {
 Ensure-HostsEntry
 
 foreach ($series in $seriesImports) {
-    if (-not $series.SourceDir) {
+    $sourceDir = if ($series.ContainsKey("SourceDirBase64") -and $series.SourceDirBase64) {
+        Decode-Base64Utf8 -Value $series.SourceDirBase64
+    } else {
+        $series.SourceDir
+    }
+
+    if (-not $sourceDir) {
         continue
     }
 
-    if (-not (Test-Path $series.SourceDir)) {
-        throw "Source folder not found: $($series.SourceDir)"
+    if (-not (Test-Path $sourceDir)) {
+        throw "Source folder not found: $sourceDir"
     }
 
     $importParams = @{
-        SourceDir = $series.SourceDir
-        SeriesTitle = $series.SeriesTitle
+        SourceDir = $sourceDir
         SeriesSlug = $series.SeriesSlug
         SeasonNumber = [int]$series.SeasonNumber
-        EpisodeTitleTemplate = $series.EpisodeTitleTemplate
-        EpisodeDescriptionTemplate = $series.EpisodeDescriptionTemplate
         Mode = $series.Mode
+    }
+
+    if ($series.ContainsKey("SeriesTitleBase64") -and $series.SeriesTitleBase64) {
+        $importParams.SeriesTitleBase64 = $series.SeriesTitleBase64
+        $importParams.SeriesTitle = "placeholder"
+    } else {
+        $importParams.SeriesTitle = $series.SeriesTitle
+    }
+
+    if ($series.ContainsKey("EpisodeTitleTemplateBase64") -and $series.EpisodeTitleTemplateBase64) {
+        $importParams.EpisodeTitleTemplateBase64 = $series.EpisodeTitleTemplateBase64
+    } else {
+        $importParams.EpisodeTitleTemplate = $series.EpisodeTitleTemplate
+    }
+
+    if ($series.ContainsKey("EpisodeDescriptionTemplateBase64") -and $series.EpisodeDescriptionTemplateBase64) {
+        $importParams.EpisodeDescriptionTemplateBase64 = $series.EpisodeDescriptionTemplateBase64
+    } else {
+        $importParams.EpisodeDescriptionTemplate = $series.EpisodeDescriptionTemplate
     }
 
     if ($series.ContainsKey("Synopsis") -and $series.Synopsis) {

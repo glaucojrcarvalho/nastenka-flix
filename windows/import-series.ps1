@@ -5,6 +5,9 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$SeriesTitle,
 
+    [string]$SourceDirBase64 = "",
+    [string]$SeriesTitleBase64 = "",
+
     [int]$SeasonNumber = 1,
     [string]$SeriesSlug = "",
     [string]$Synopsis = "",
@@ -12,11 +15,22 @@ param(
     [ValidateSet("copy", "move")]
     [string]$Mode = "move",
     [switch]$DryRun,
-    [string]$EpisodeTitleTemplate = "Серия {episode}",
-    [string]$EpisodeDescriptionTemplate = "Серия {episode}"
+    [string]$EpisodeTitleTemplate = "Episode {episode}",
+    [string]$EpisodeDescriptionTemplate = "Episode {episode}",
+    [string]$EpisodeTitleTemplateBase64 = "",
+    [string]$EpisodeDescriptionTemplateBase64 = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+function Decode-Base64Utf8 {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Value
+    )
+
+    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Value))
+}
 
 function Resolve-PythonCommand {
     $pyCommand = Get-Command py -ErrorAction SilentlyContinue
@@ -65,6 +79,22 @@ if (-not (Test-Path $pythonScript)) {
 $pythonCommand = Resolve-PythonCommand
 $pythonExe = $pythonCommand.Executable
 $pythonPrefix = $pythonCommand.Prefix
+
+if ($SourceDirBase64) {
+    $SourceDir = Decode-Base64Utf8 -Value $SourceDirBase64
+}
+
+if ($SeriesTitleBase64) {
+    $SeriesTitle = Decode-Base64Utf8 -Value $SeriesTitleBase64
+}
+
+if ($EpisodeTitleTemplateBase64) {
+    $EpisodeTitleTemplate = Decode-Base64Utf8 -Value $EpisodeTitleTemplateBase64
+}
+
+if ($EpisodeDescriptionTemplateBase64) {
+    $EpisodeDescriptionTemplate = Decode-Base64Utf8 -Value $EpisodeDescriptionTemplateBase64
+}
 
 $arguments = @()
 $arguments += $pythonPrefix

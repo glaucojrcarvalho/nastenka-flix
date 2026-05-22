@@ -52,6 +52,7 @@ If you want one script that sets up the hosts entry, imports the configured seri
 ```
 
 Edit [windows/bootstrap-local.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/bootstrap-local.ps1:1) first and adjust the series folders at the top.
+The default bootstrap file now stores the Cyrillic titles and templates in Base64 so PowerShell on Windows does not corrupt them.
 
 If you want a faster bootstrap on Windows:
 
@@ -100,6 +101,31 @@ What it does:
 - moves or copies the files into `media/series/<slug>/season-01/`
 - renames them to a clean pattern like `s01e001.avi`
 - creates or replaces the matching series entry in `backend/catalog.json`
+
+Note on old AVI / DivX files:
+
+- the importer can catalog `.avi` files, but Chrome and most modern browsers often cannot play DivX/Xvid AVI video
+- if the player loads the file but stays blank at `0:00`, the video codec is unsupported by the browser
+- the practical fix is to convert those episodes to `.mp4` with `H.264` video and `AAC` audio, then restart the app
+
+If the series text was imported with broken Cyrillic and the source files have already been moved, repair the catalog entry in place and restart:
+
+```cmd
+.\windows\update-series-metadata.cmd -SeriesSlug ne-rodis-krasivoy -SeriesTitle placeholder -SeriesTitleBase64 0J3QtSDRgNC+0LTQuNGB0Ywg0LrRgNCw0YHQuNCy0L7QuQ== -EpisodeTitleTemplateBase64 0KHQtdGA0LjRjyB7ZXBpc29kZX0= -EpisodeDescriptionTemplateBase64 0KHQtdGA0LjRjyB7ZXBpc29kZX0=
+```
+
+If the library is already imported and the episodes are old `.avi` files, use the one-shot repair script instead:
+
+```cmd
+.\windows\fix-library.cmd
+```
+
+It will:
+
+- convert every `.avi` under `media/series` to browser-friendly `.mp4`
+- fix the current Cyrillic titles/templates for the configured series
+- rewrite `backend/catalog.json` to point at the new `.mp4` files
+- rebuild and restart the app so the database picks up the corrected catalog
 
 For a safe preview first:
 

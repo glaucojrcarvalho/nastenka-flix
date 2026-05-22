@@ -16,6 +16,7 @@ export function PlayerPage() {
   const [episode, setEpisode] = useState<EpisodeDetail | null>(null);
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [playbackError, setPlaybackError] = useState<string | null>(null);
 
   useEffect(() => {
     const numericEpisodeId = Number(episodeId);
@@ -23,6 +24,7 @@ export function PlayerPage() {
       .then(([episodeResponse, progressResponse]) => {
         setEpisode(episodeResponse);
         setProgress(progressResponse);
+        setPlaybackError(null);
       })
       .catch((requestError) => {
         setError(requestError instanceof Error ? requestError.message : 'Could not load episode');
@@ -60,9 +62,15 @@ export function PlayerPage() {
               const nextProgress = await updateEpisodeProgress(episode.id, positionSeconds, completed);
               setProgress(nextProgress);
             }}
+            onPlaybackError={() => {
+              setPlaybackError(
+                'This video file loaded but the browser could not play its format. Convert this episode to MP4 with H.264 video and AAC audio.',
+              );
+            }}
             poster={episode.thumbnail_url}
             src={resolveMediaUrl(episode.media_url)}
           />
+          {playbackError ? <div className="panel panel--error">{playbackError}</div> : null}
         </div>
         <aside className="player-layout__aside panel">
           <p>{episode.description}</p>
