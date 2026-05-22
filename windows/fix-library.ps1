@@ -75,7 +75,14 @@ function To-WorkspacePath {
         [string]$AbsolutePath
     )
 
-    $relativePath = [System.IO.Path]::GetRelativePath($projectRoot, $AbsolutePath)
+    $resolvedProjectRoot = [System.IO.Path]::GetFullPath($projectRoot)
+    $resolvedAbsolutePath = [System.IO.Path]::GetFullPath($AbsolutePath)
+
+    if (-not $resolvedAbsolutePath.StartsWith($resolvedProjectRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Path is outside the project root: $AbsolutePath"
+    }
+
+    $relativePath = $resolvedAbsolutePath.Substring($resolvedProjectRoot.Length).TrimStart("\")
     return ("/workspace/" + ($relativePath -replace "\\", "/"))
 }
 
