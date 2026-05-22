@@ -15,23 +15,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   return (
     <section className="login-panel">
       <div className="login-panel__intro">
-        <p className="eyebrow">Birthday edition</p>
-        <h1>Your private streaming space.</h1>
+        <p className="eyebrow">Only for Nastenka</p>
+        <h1>This is my place.</h1>
         <p>
-          Three favorite series. Endless rewatch energy. A private little corner of the internet made to feel like her own platform.
+          My favorite stories, my comfort rewatches, my own little platform waiting exactly the way I like it.
         </p>
         <div className="feature-points">
           <div className="feature-point">
-            <strong>Curated comfort shows</strong>
-            <span>Only the series she genuinely returns to again and again.</span>
+            <strong>My forever rewatches</strong>
+            <span>The series I never get tired of, all in one place.</span>
           </div>
           <div className="feature-point">
-            <strong>Resume without friction</strong>
-            <span>Playback progress stays saved, so the next rewatch starts exactly where it should.</span>
+            <strong>Right where I left off</strong>
+            <span>Every pause is remembered, so the next episode night starts smoothly.</span>
           </div>
           <div className="feature-point">
-            <strong>Private by design</strong>
-            <span>Self-hosted, simple, and meant for one special viewer first.</span>
+            <strong>Made just for me</strong>
+            <span>A private little streaming world that feels personal from the first click.</span>
           </div>
         </div>
       </div>
@@ -53,23 +53,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       >
         <label>
           Username
-          <input placeholder="username" value={username} onChange={(event) => setUsername(event.target.value)} />
+          <input placeholder="my username" value={username} onChange={(event) => setUsername(event.target.value)} />
         </label>
         <label>
           Password
           <input
-            placeholder="password"
+            placeholder="my password"
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
         </label>
         <div className="login-note">
-          <span>Private access only.</span>
+          <span>My private entrance.</span>
         </div>
         {error ? <p className="form-error">{error}</p> : null}
         <button className="primary-button" disabled={isSubmitting} type="submit">
-          {isSubmitting ? 'Opening Nastenka Flix...' : 'Enter Nastenka Flix'}
+          {isSubmitting ? 'Opening my space...' : 'Enter my Nastenka Flix'}
         </button>
       </form>
     </section>

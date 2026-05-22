@@ -34,17 +34,17 @@ export function PlayerPage() {
   }
 
   if (!episode || !progress) {
-    return <div className="panel">Preparing player...</div>;
+    return <div className="panel">Getting my episode ready...</div>;
   }
 
   return (
     <section className="stack-lg">
       <Link className="back-link" to={`/series/${episode.series_slug}`}>
-        Back to series
+        Back to my series
       </Link>
       <div className="player-heading">
         <div>
-          <p className="eyebrow">Now playing</p>
+          <p className="eyebrow">Playing for me now</p>
           <h1>{episode.title}</h1>
         </div>
         <div className="player-heading__meta">
@@ -70,7 +70,7 @@ export function PlayerPage() {
             <div className="progress-meter__bar">
               <span style={{ width: `${Math.min(100, (progress.position_seconds / Math.max(episode.duration_seconds, 1)) * 100)}%` }} />
             </div>
-            <small>{progress.completed ? 'Completed on last watch' : 'Saved for the next session'}</small>
+            <small>{progress.completed ? 'I finished this on my last watch' : 'Saved so I can come back anytime'}</small>
           </div>
           <dl className="detail-grid">
             <div>
@@ -78,12 +78,12 @@ export function PlayerPage() {
               <dd>{Math.round(episode.duration_seconds / 60)} min</dd>
             </div>
             <div>
-              <dt>Resume point</dt>
+              <dt>My resume point</dt>
               <dd>{Math.round(progress.position_seconds / 60)} min</dd>
             </div>
             <div>
-              <dt>Status</dt>
-              <dd>{progress.completed ? 'Completed' : 'In progress'}</dd>
+              <dt>My status</dt>
+              <dd>{progress.completed ? 'Finished' : 'Still watching'}</dd>
             </div>
           </dl>
         </aside>

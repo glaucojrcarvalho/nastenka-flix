@@ -7,20 +7,18 @@ services:
     environment:
       DATABASE_URL: sqlite:////data/nastenka_flix.db
       MEDIA_ROOT: /media
-      ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      ALLOWED_ORIGINS: http://nastenka-flix,http://localhost,http://127.0.0.1
     volumes:
       - backend-data:/data
       - ./media:/media:ro
-    ports:
-      - "8000:8000"
 
   frontend:
     build:
       context: ./frontend
       args:
-        VITE_API_BASE_URL: http://localhost:8000/api
+        VITE_API_BASE_URL: /api
     ports:
-      - "5173:80"
+      - "80:80"
     depends_on:
       - backend
 

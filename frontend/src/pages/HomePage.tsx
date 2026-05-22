@@ -27,20 +27,20 @@ export function HomePage() {
         style={featuredSeries?.poster_url ? { backgroundImage: `linear-gradient(90deg, rgba(7, 8, 15, 0.9) 0%, rgba(7, 8, 15, 0.72) 45%, rgba(7, 8, 15, 0.18) 100%), url(${featuredSeries.poster_url})` } : undefined}
       >
         <div className="hero-card__content">
-          <p className="eyebrow">Your comfort collection</p>
-          <h1>A personal streaming room for the three series she always comes back to.</h1>
+          <p className="eyebrow">My comfort collection</p>
+          <h1>This is my little world of familiar stories.</h1>
           <p>
-            Curated for repeat rewatches, quiet evenings, and the kind of episodes that already feel like home.
+            The shows I always come back to, ready for quiet nights, favorite scenes, and one-more-episode decisions.
           </p>
           <div className="hero-card__actions">
             {featuredSeries ? (
               <Link className="primary-button" to={`/series/${featuredSeries.slug}`}>
-                Watch featured series
+                Start my next rewatch
               </Link>
             ) : null}
-            <span className="hero-chip">Private access</span>
+            <span className="hero-chip">Only mine</span>
             <span className="hero-chip">Resume anytime</span>
-            <span className="hero-chip">Built as a gift</span>
+            <span className="hero-chip">Made with love</span>
           </div>
         </div>
       </div>
@@ -49,8 +49,8 @@ export function HomePage() {
         <section className="shelf">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Continue watching</p>
-              <h2>Pick up where the last cozy rewatch ended.</h2>
+              <p className="eyebrow">Keep watching</p>
+              <h2>Right where my last rewatch stopped.</h2>
             </div>
           </div>
           <div className="series-grid series-grid--compact">
@@ -64,13 +64,13 @@ export function HomePage() {
       <section className="shelf">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Curated library</p>
-            <h2>The yearly-repeat lineup.</h2>
+            <p className="eyebrow">My library</p>
+            <h2>The stories I always choose again.</h2>
           </div>
-          <p className="section-heading__copy">A small catalog, intentionally chosen for replay value instead of endless scrolling.</p>
+          <p className="section-heading__copy">No endless searching. Just the series that already feel like home to me.</p>
         </div>
 
-        {isLoading ? <div className="panel">Loading your catalog...</div> : null}
+        {isLoading ? <div className="panel">Loading my favorites...</div> : null}
         {error ? <div className="panel panel--error">{error}</div> : null}
 
         {!isLoading && !error ? (

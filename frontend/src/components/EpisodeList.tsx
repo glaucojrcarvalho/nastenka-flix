@@ -19,7 +19,7 @@ export function EpisodeList({ episodes }: EpisodeListProps) {
             <h3>{episode.title}</h3>
             <p>{episode.description}</p>
           </div>
-          <span className="episode-item__duration">{Math.round(episode.duration_seconds / 60)} min</span>
+          <span className="episode-item__duration">{Math.round(episode.duration_seconds / 60)} min for me</span>
         </Link>
       ))}
     </div>

@@ -28,16 +28,16 @@ function AppLayout({
               <span className="brand__mark">N</span>
               <span>
                 <strong>Nastenka Flix</strong>
-                <small>Made for her comfort-watch nights</small>
+                <small>My little place for the stories I always return to</small>
               </span>
             </Link>
-            <span className="nav-pill">Private collection</span>
+            <span className="nav-pill">Nastenka&apos;s collection</span>
           </div>
           <div className="app-header__actions">
-            {user ? <span className="user-pill">Watching as {user.display_name}</span> : null}
+            {user ? <span className="user-pill">Welcome back, {user.display_name}</span> : null}
             {user ? (
               <button className="ghost-button" onClick={onLogout} type="button">
-                Sign out
+                Leave for now
               </button>
             ) : null}
           </div>
@@ -116,7 +116,7 @@ export default function App() {
   };
 
   if (isCheckingSession) {
-    return <div className="loading-screen">Restoring your screening room...</div>;
+    return <div className="loading-screen">Opening my corner of Nastenka Flix...</div>;
   }
 
   return (

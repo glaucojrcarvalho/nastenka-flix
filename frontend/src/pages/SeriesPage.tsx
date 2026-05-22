@@ -22,27 +22,27 @@ export function SeriesPage() {
   }
 
   if (!series) {
-    return <div className="panel">Loading series...</div>;
+    return <div className="panel">Opening this story for me...</div>;
   }
 
   return (
     <section className="stack-lg">
       <Link className="back-link" to="/">
-        Back to catalog
+        Back to my library
       </Link>
       <article className="series-hero" style={series.poster_url ? { backgroundImage: `linear-gradient(90deg, rgba(7, 8, 15, 0.94) 0%, rgba(7, 8, 15, 0.74) 52%, rgba(7, 8, 15, 0.1) 100%), url(${series.poster_url})` } : undefined}>
         <div className="series-hero__content">
-          <p className="eyebrow">Signature title</p>
+          <p className="eyebrow">One of my favorites</p>
           <h1>{series.title}</h1>
           <p>{series.synopsis}</p>
           <div className="series-hero__stats">
             <span>{series.stats.total_episodes} episodes</span>
-            <span>{series.stats.watched_episodes} completed</span>
-            <span>{series.stats.completion_percent}% progress</span>
+            <span>{series.stats.watched_episodes} finished by me</span>
+            <span>{series.stats.completion_percent}% of this rewatch</span>
           </div>
           {series.episodes[0] ? (
             <Link className="primary-button" to={`/player/${series.episodes[0].id}`}>
-              Start from episode one
+              Begin again from episode one
             </Link>
           ) : null}
         </div>

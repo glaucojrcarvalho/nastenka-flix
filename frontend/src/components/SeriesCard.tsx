@@ -10,7 +10,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
   return (
     <Link className="series-card" to={`/series/${series.slug}`}>
       <div className="series-card__poster">
-        <div className="series-card__badge">{series.stats.completion_percent > 0 ? 'Picked up before' : 'Ready to start'}</div>
+        <div className="series-card__badge">{series.stats.completion_percent > 0 ? 'I already started this one' : 'Waiting for me'}</div>
         {series.poster_url ? (
           <img alt={series.title} src={series.poster_url} />
         ) : (
@@ -18,12 +18,12 @@ export function SeriesCard({ series }: SeriesCardProps) {
         )}
       </div>
       <div className="series-card__body">
-        <p className="eyebrow">Signature rewatch</p>
+        <p className="eyebrow">My rewatch pick</p>
         <h3>{series.title}</h3>
         <p>{series.synopsis}</p>
         <div className="series-card__meta">
           <span>{series.stats.total_episodes} episodes</span>
-          <span>{series.stats.completion_percent}% complete</span>
+          <span>{series.stats.completion_percent}% through this watch</span>
         </div>
       </div>
     </Link>
