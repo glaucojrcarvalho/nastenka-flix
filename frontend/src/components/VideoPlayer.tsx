@@ -11,14 +11,39 @@ type VideoPlayerProps = {
 export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress, onPlaybackError }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const lastSyncedRef = useRef(0);
+  const resumeAppliedRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    resumeAppliedRef.current = null;
+  }, [src]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !initialPositionSeconds) {
       return;
     }
-    video.currentTime = initialPositionSeconds;
-  }, [initialPositionSeconds]);
+
+    // Only restore the saved position once per source load.
+    if (resumeAppliedRef.current === src) {
+      return;
+    }
+
+    const applyResumePosition = () => {
+      video.currentTime = initialPositionSeconds;
+      lastSyncedRef.current = Math.floor(initialPositionSeconds);
+      resumeAppliedRef.current = src;
+    };
+
+    if (video.readyState >= 1) {
+      applyResumePosition();
+      return;
+    }
+
+    video.addEventListener('loadedmetadata', applyResumePosition, { once: true });
+    return () => {
+      video.removeEventListener('loadedmetadata', applyResumePosition);
+    };
+  }, [initialPositionSeconds, src]);
 
   return (
     <video
