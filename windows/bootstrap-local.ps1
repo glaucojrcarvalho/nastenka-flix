@@ -61,25 +61,25 @@ foreach ($series in $seriesImports) {
         throw "Source folder not found: $($series.SourceDir)"
     }
 
-    $arguments = @(
-        "-SourceDir", $series.SourceDir,
-        "-SeriesTitle", $series.SeriesTitle,
-        "-SeriesSlug", $series.SeriesSlug,
-        "-SeasonNumber", [string]$series.SeasonNumber,
-        "-EpisodeTitleTemplate", $series.EpisodeTitleTemplate,
-        "-EpisodeDescriptionTemplate", $series.EpisodeDescriptionTemplate,
-        "-Mode", $series.Mode
-    )
+    $importParams = @{
+        SourceDir = $series.SourceDir
+        SeriesTitle = $series.SeriesTitle
+        SeriesSlug = $series.SeriesSlug
+        SeasonNumber = [int]$series.SeasonNumber
+        EpisodeTitleTemplate = $series.EpisodeTitleTemplate
+        EpisodeDescriptionTemplate = $series.EpisodeDescriptionTemplate
+        Mode = $series.Mode
+    }
 
     if ($series.ContainsKey("Synopsis") -and $series.Synopsis) {
-        $arguments += @("-Synopsis", $series.Synopsis)
+        $importParams.Synopsis = $series.Synopsis
     }
 
     if ($series.ContainsKey("PosterUrl") -and $series.PosterUrl) {
-        $arguments += @("-PosterUrl", $series.PosterUrl)
+        $importParams.PosterUrl = $series.PosterUrl
     }
 
-    & ".\windows\import-series.ps1" @arguments
+    & ".\windows\import-series.ps1" @importParams
 }
 
 & ".\windows\run-local.ps1" -Build
