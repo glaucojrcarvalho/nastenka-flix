@@ -10,7 +10,7 @@ from app.db.models import Episode, Series, User
 
 # Catalog is loaded from catalog.json (gitignored, deploy-specific) when present,
 # falling back to catalog.example.json (committed, contains fictional placeholder data).
-_CATALOG_DIR = Path(__file__).resolve().parents[3] / "backend"
+_CATALOG_DIR = Path(__file__).resolve().parents[2]
 
 def _load_catalog() -> list[dict]:
     private = _CATALOG_DIR / "catalog.json"
@@ -68,4 +68,3 @@ def seed_database(db: Session) -> None:
 if __name__ == "__main__":
     with SessionLocal() as session:
         seed_database(session)
-

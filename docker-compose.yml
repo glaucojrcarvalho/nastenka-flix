@@ -11,6 +11,8 @@ services:
     volumes:
       - backend-data:/data
       - ./media:/media:ro
+      - ./backend/catalog.example.json:/app/catalog.example.json:ro
+      - ./backend/catalog.json:/app/catalog.json:ro
 
   frontend:
     build:
