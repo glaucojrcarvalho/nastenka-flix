@@ -18,6 +18,42 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Resolve-PythonCommand {
+    $pyCommand = Get-Command py -ErrorAction SilentlyContinue
+    if ($pyCommand) {
+        return @{
+            Executable = "py"
+            Prefix = @("-3")
+        }
+    }
+
+    $pythonCommand = Get-Command python -ErrorAction SilentlyContinue
+    if ($pythonCommand -and $pythonCommand.Source -notlike "*WindowsApps*") {
+        return @{
+            Executable = "python"
+            Prefix = @()
+        }
+    }
+
+    $candidates = @(
+        Get-ChildItem "$Env:LocalAppData\Programs\Python" -Directory -ErrorAction SilentlyContinue |
+            Sort-Object Name -Descending |
+            ForEach-Object { Join-Path $_.FullName "python.exe" },
+        Get-ChildItem "$Env:ProgramFiles" -Directory -Filter "Python*" -ErrorAction SilentlyContinue |
+            Sort-Object Name -Descending |
+            ForEach-Object { Join-Path $_.FullName "python.exe" }
+    ) | Where-Object { $_ -and (Test-Path $_) }
+
+    if ($candidates) {
+        return @{
+            Executable = $candidates[0]
+            Prefix = @()
+        }
+    }
+
+    throw "Python 3 was not found. Install Python 3 first."
+}
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
 $pythonScript = Join-Path $projectRoot "scripts\import_series.py"
@@ -26,18 +62,9 @@ if (-not (Test-Path $pythonScript)) {
     throw "Could not find importer script at $pythonScript"
 }
 
-$pythonCommand = Get-Command py -ErrorAction SilentlyContinue
-if ($pythonCommand) {
-    $pythonExe = "py"
-    $pythonPrefix = @("-3")
-} else {
-    $pythonCommand = Get-Command python -ErrorAction SilentlyContinue
-    if (-not $pythonCommand) {
-        throw "Python was not found. Install Python 3 first, or run the import from a machine that already has it."
-    }
-    $pythonExe = "python"
-    $pythonPrefix = @()
-}
+$pythonCommand = Resolve-PythonCommand
+$pythonExe = $pythonCommand.Executable
+$pythonPrefix = $pythonCommand.Prefix
 
 $arguments = @()
 $arguments += $pythonPrefix
@@ -73,6 +100,7 @@ Write-Host "Source: $SourceDir"
 Write-Host "Series: $SeriesTitle"
 Write-Host "Season: $SeasonNumber"
 Write-Host "Mode: $Mode"
+Write-Host "Python: $pythonExe"
 Write-Host ""
 
-& $pythonExe $arguments
+& $pythonExe @arguments

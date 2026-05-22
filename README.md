@@ -45,6 +45,14 @@ To make it start automatically when she signs in:
 .\windows\install-autostart.ps1
 ```
 
+If you want one script that sets up the hosts entry, imports the configured series, starts Docker, builds the app, and installs autostart, use:
+
+```cmd
+.\windows\bootstrap-local.cmd
+```
+
+Edit [windows/bootstrap-local.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/bootstrap-local.ps1:1) first and adjust the series folders at the top.
+
 If you want a faster bootstrap on Windows:
 
 ```powershell
@@ -131,6 +139,8 @@ Use these files on her laptop:
 
 - [windows/run-local.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/run-local.ps1:1) starts Docker Desktop if needed, waits for Docker, and runs `docker compose up -d`
 - [windows/run-local.cmd](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/run-local.cmd:1) is the double-clickable wrapper
+- [windows/bootstrap-local.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/bootstrap-local.ps1:1) is the one-shot first-run setup and import script
+- [windows/bootstrap-local.cmd](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/bootstrap-local.cmd:1) is the double-clickable wrapper for it
 - [windows/stop-local.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/stop-local.ps1:1) stops the app
 - [windows/install-autostart.ps1](/home/glaucojrcarvalho/Projects/Pessoal/nastenka-flix/windows/install-autostart.ps1:1) registers a scheduled task to start the app at sign-in
 
