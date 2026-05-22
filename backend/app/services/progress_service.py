@@ -33,8 +33,11 @@ def save_progress(db: Session, user_id: int, episode: Episode, payload: Progress
         progress = WatchProgress(user_id=user_id, episode_id=episode.id)
         db.add(progress)
 
-    progress.position_seconds = min(payload.position_seconds, episode.duration_seconds or payload.position_seconds)
-    progress.completed = payload.completed or progress.position_seconds >= max(episode.duration_seconds - 30, 0)
+    has_known_duration = episode.duration_seconds > 0
+    progress.position_seconds = min(payload.position_seconds, episode.duration_seconds) if has_known_duration else payload.position_seconds
+    progress.completed = payload.completed or (
+        has_known_duration and progress.position_seconds >= max(episode.duration_seconds - 30, 0)
+    )
     progress.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(progress)
