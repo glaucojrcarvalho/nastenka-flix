@@ -1,5 +1,6 @@
 param(
-    [switch]$DeleteOriginalAvi
+    [switch]$DeleteOriginalAvi,
+    [switch]$MetadataOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -176,19 +177,21 @@ if (-not (Test-Path $mediaRoot)) {
 
 Ensure-DockerEngine
 
-$aviFiles = Get-ChildItem -Path $mediaRoot -Filter "*.avi" -Recurse -File | Sort-Object FullName
-foreach ($aviFile in $aviFiles) {
-    $mp4Path = [System.IO.Path]::ChangeExtension($aviFile.FullName, ".mp4")
+if (-not $MetadataOnly) {
+    $aviFiles = Get-ChildItem -Path $mediaRoot -Filter "*.avi" -Recurse -File | Sort-Object FullName
+    foreach ($aviFile in $aviFiles) {
+        $mp4Path = [System.IO.Path]::ChangeExtension($aviFile.FullName, ".mp4")
 
-    if (-not (Test-Path $mp4Path)) {
-        Write-Host "Converting $($aviFile.FullName) -> $mp4Path" -ForegroundColor Cyan
-        Convert-AviToMp4 -InputPath $aviFile.FullName -OutputPath $mp4Path
-    } else {
-        Write-Host "Skipping existing MP4 for $($aviFile.Name)" -ForegroundColor Yellow
-    }
+        if (-not (Test-Path $mp4Path)) {
+            Write-Host "Converting $($aviFile.FullName) -> $mp4Path" -ForegroundColor Cyan
+            Convert-AviToMp4 -InputPath $aviFile.FullName -OutputPath $mp4Path
+        } else {
+            Write-Host "Skipping existing MP4 for $($aviFile.Name)" -ForegroundColor Yellow
+        }
 
-    if ($DeleteOriginalAvi -and (Test-Path $mp4Path)) {
-        Remove-Item $aviFile.FullName -Force
+        if ($DeleteOriginalAvi -and (Test-Path $mp4Path)) {
+            Remove-Item $aviFile.FullName -Force
+        }
     }
 }
 
@@ -230,5 +233,5 @@ Write-Host "Updated backend/catalog.json" -ForegroundColor Green
 & ".\windows\run-local.ps1" -Build
 
 Write-Host ""
-Write-Host "Library repair complete." -ForegroundColor Green
+Write-Host ($MetadataOnly ? "Metadata refresh complete." : "Library repair complete.") -ForegroundColor Green
 Write-Host "Open http://nastenka-flix"

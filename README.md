@@ -127,6 +127,12 @@ It will:
 - rewrite `backend/catalog.json` to point at the new `.mp4` files
 - rebuild and restart the app so the database picks up the corrected catalog
 
+If the `.mp4` files already exist and you only want to refresh `media_path` and `duration_seconds` without converting again, use:
+
+```cmd
+.\windows\fix-library.cmd -MetadataOnly
+```
+
 For Ubuntu, if the original folders are under `~/Downloads/series`, use:
 
 ```bash
