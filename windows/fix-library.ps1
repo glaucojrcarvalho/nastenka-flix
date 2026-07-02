@@ -233,5 +233,9 @@ Write-Host "Updated backend/catalog.json" -ForegroundColor Green
 & ".\windows\run-local.ps1" -Build
 
 Write-Host ""
-Write-Host ($MetadataOnly ? "Metadata refresh complete." : "Library repair complete.") -ForegroundColor Green
+if ($MetadataOnly) {
+    Write-Host "Metadata refresh complete." -ForegroundColor Green
+} else {
+    Write-Host "Library repair complete." -ForegroundColor Green
+}
 Write-Host "Open http://nastenka-flix"
