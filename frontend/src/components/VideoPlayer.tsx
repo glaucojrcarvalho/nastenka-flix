@@ -4,17 +4,29 @@ type VideoPlayerProps = {
   src: string;
   poster?: string | null;
   initialPositionSeconds: number;
+  autoPlay?: boolean;
   onProgress: (positionSeconds: number, completed: boolean) => void;
+  onEnded?: () => void;
   onPlaybackError?: () => void;
 };
 
-export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress, onPlaybackError }: VideoPlayerProps) {
+export function VideoPlayer({
+  src,
+  poster,
+  initialPositionSeconds,
+  autoPlay = false,
+  onProgress,
+  onEnded,
+  onPlaybackError,
+}: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const lastSyncedRef = useRef(0);
   const resumeAppliedRef = useRef<string | null>(null);
+  const autoPlayAttemptedRef = useRef<string | null>(null);
 
   useEffect(() => {
     resumeAppliedRef.current = null;
+    autoPlayAttemptedRef.current = null;
   }, [src]);
 
   useEffect(() => {
@@ -45,6 +57,30 @@ export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress, o
     };
   }, [initialPositionSeconds, src]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !autoPlay || autoPlayAttemptedRef.current === src) {
+      return;
+    }
+
+    const startPlayback = () => {
+      autoPlayAttemptedRef.current = src;
+      void video.play().catch(() => {
+        // Browser autoplay policies may block this. Controls stay available.
+      });
+    };
+
+    if (video.readyState >= 2) {
+      startPlayback();
+      return;
+    }
+
+    video.addEventListener('canplay', startPlayback, { once: true });
+    return () => {
+      video.removeEventListener('canplay', startPlayback);
+    };
+  }, [autoPlay, src]);
+
   return (
     <video
       ref={videoRef}
@@ -64,6 +100,7 @@ export function VideoPlayer({ src, poster, initialPositionSeconds, onProgress, o
       onEnded={(event) => {
         const currentTime = Math.floor(event.currentTarget.duration || event.currentTarget.currentTime);
         onProgress(currentTime, true);
+        onEnded?.();
       }}
       onError={() => {
         onPlaybackError?.();

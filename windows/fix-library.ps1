@@ -118,6 +118,34 @@ function Convert-AviToMp4 {
     & docker @arguments
 }
 
+function Get-VideoDurationSeconds {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$VideoPath
+    )
+
+    $workspaceVideoPath = To-WorkspacePath -AbsolutePath $VideoPath
+    $arguments = @(
+        "run",
+        "--rm",
+        "-v", "${projectRoot}:/workspace",
+        "-w", "/workspace",
+        "jrottenberg/ffmpeg:6.0-ubuntu",
+        "ffprobe",
+        "-v", "error",
+        "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1",
+        $workspaceVideoPath
+    )
+
+    $durationOutput = (& docker @arguments | Out-String).Trim()
+    if (-not $durationOutput) {
+        return 0
+    }
+
+    return [int][math]::Floor([double]$durationOutput)
+}
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
 Set-Location $projectRoot
@@ -184,6 +212,11 @@ foreach ($series in $catalog) {
                 if (Test-Path $mp4Absolute) {
                     $episode.media_path = $mp4Relative
                 }
+            }
+
+            $videoAbsolute = Join-Path $projectRoot ("media\" + $episode.media_path.Replace("/", "\"))
+            if (Test-Path $videoAbsolute) {
+                $episode.duration_seconds = Get-VideoDurationSeconds -VideoPath $videoAbsolute
             }
         }
     }

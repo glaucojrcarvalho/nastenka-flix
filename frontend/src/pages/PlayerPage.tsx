@@ -1,29 +1,39 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import {
   getEpisode,
   getEpisodeProgress,
+  getSeriesDetail,
   resolveMediaUrl,
   updateEpisodeProgress,
   type EpisodeDetail,
+  type EpisodeSummary,
   type ProgressResponse,
 } from '../api/client';
 import { VideoPlayer } from '../components/VideoPlayer';
 
 export function PlayerPage() {
   const { episodeId = '' } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [episode, setEpisode] = useState<EpisodeDetail | null>(null);
   const [progress, setProgress] = useState<ProgressResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
+  const [nextEpisode, setNextEpisode] = useState<EpisodeSummary | null>(null);
+  const shouldAutoPlay = searchParams.get('autoplay') === '1';
 
   useEffect(() => {
     const numericEpisodeId = Number(episodeId);
     Promise.all([getEpisode(numericEpisodeId), getEpisodeProgress(numericEpisodeId)])
-      .then(([episodeResponse, progressResponse]) => {
+      .then(async ([episodeResponse, progressResponse]) => {
+        const seriesDetail = await getSeriesDetail(episodeResponse.series_slug);
+        const currentIndex = seriesDetail.episodes.findIndex((item) => item.id === episodeResponse.id);
+
         setEpisode(episodeResponse);
         setProgress(progressResponse);
+        setNextEpisode(currentIndex >= 0 ? seriesDetail.episodes[currentIndex + 1] ?? null : null);
         setPlaybackError(null);
       })
       .catch((requestError) => {
@@ -57,10 +67,17 @@ export function PlayerPage() {
       <div className="player-layout">
         <div className="player-layout__video">
           <VideoPlayer
+            autoPlay={shouldAutoPlay}
             initialPositionSeconds={progress.position_seconds}
             onProgress={async (positionSeconds, completed) => {
               const nextProgress = await updateEpisodeProgress(episode.id, positionSeconds, completed);
               setProgress(nextProgress);
+            }}
+            onEnded={() => {
+              if (!nextEpisode) {
+                return;
+              }
+              navigate(`/player/${nextEpisode.id}?autoplay=1`);
             }}
             onPlaybackError={() => {
               setPlaybackError(
@@ -92,6 +109,10 @@ export function PlayerPage() {
             <div>
               <dt>My status</dt>
               <dd>{progress.completed ? 'Finished' : 'Still watching'}</dd>
+            </div>
+            <div>
+              <dt>Up next</dt>
+              <dd>{nextEpisode ? nextEpisode.title : 'Last episode for now'}</dd>
             </div>
           </dl>
         </aside>

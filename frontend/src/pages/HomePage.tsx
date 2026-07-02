@@ -23,7 +23,7 @@ export function HomePage() {
   return (
     <section className="stack-lg">
       <div
-        className="hero-card hero-card--featured"
+        className={`hero-card hero-card--featured${continueWatching.length > 0 ? ' hero-card--compact' : ''}`}
         style={featuredSeries?.poster_url ? { backgroundImage: `linear-gradient(90deg, rgba(7, 8, 15, 0.9) 0%, rgba(7, 8, 15, 0.72) 45%, rgba(7, 8, 15, 0.18) 100%), url(${featuredSeries.poster_url})` } : undefined}
       >
         <div className="hero-card__content">

@@ -127,6 +127,21 @@ It will:
 - rewrite `backend/catalog.json` to point at the new `.mp4` files
 - rebuild and restart the app so the database picks up the corrected catalog
 
+For Ubuntu, if the original folders are under `~/Downloads/series`, use:
+
+```bash
+./scripts/fix-library-ubuntu.sh
+```
+
+It will import from the configured folders inside `~/Downloads/series`, convert to `.mp4`, repair the catalog, and restart the app.
+On Ubuntu, the source `.avi` files are deleted automatically after each successful conversion to save disk space.
+
+If `~/Downloads/series` contains one flat set of episode files for a single show, use:
+
+```bash
+./scripts/fix-library-ubuntu.sh --skip-restart --flat-files --series-slug ne-rodis-krasivoy
+```
+
 For a safe preview first:
 
 ```bash

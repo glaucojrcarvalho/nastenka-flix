@@ -233,6 +233,10 @@ button {
   min-height: 440px;
 }
 
+.hero-card--compact {
+  min-height: 320px;
+}
+
 .hero-card__content,
 .series-hero__content {
   max-width: min(650px, 100%);
@@ -262,6 +266,14 @@ button {
   margin: 0 0 12px;
   font-size: clamp(2.2rem, 5vw, 5rem);
   line-height: 0.92;
+}
+
+.hero-card--compact h1 {
+  font-size: clamp(1.8rem, 3.2vw, 3.5rem);
+}
+
+.hero-card--compact .hero-card__actions {
+  margin-top: 18px;
 }
 
 .hero-card p,
